@@ -22,7 +22,7 @@ sdict = {
     'version' : __version__,
     'description' : 'Utilities to convert Redis RDB files to JSON or SQL formats',
     'long_description' : long_description,
-    'url': 'https://github.com/sripathikrishnan/redis-rdb-tools',
+    'url': 'https://github.com/aguelajaib/redis-rdb-tools',
     'download_url': 'https://github.com/sripathikrishnan/redis-rdb-tools/archive/rdbtools-%s.tar.gz' % __version__,
     'author': 'Sripathi Krishnan, Redis Labs',
     'author_email' : 'Sripathi.Krishnan@gmail.com',
