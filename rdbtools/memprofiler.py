@@ -89,8 +89,9 @@ class PrintAllKeys(object):
         self._largest = largest
         self._out = out
         self._delimiter = delimiter
-        headers = "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n" % (
-            "database", self._delimiter, "type", self._delimiter, "key", self._delimiter, "size_in_bytes", self._delimiter, "encoding", self._delimiter, "num_elements", self._delimiter, "len_largest_element", self._delimiter, "expiry")
+        headers = "# HELP custom_redis_key"
+        # headers = "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n" % (
+        #     "database", self._delimiter, "type", self._delimiter, "key", self._delimiter, "size_in_bytes", self._delimiter, "encoding", self._delimiter, "num_elements", self._delimiter, "len_largest_element", self._delimiter, "expiry")
         self._out.write(codecs.encode(headers, 'latin-1'))
 
         if self._largest is not None:
@@ -101,11 +102,21 @@ class PrintAllKeys(object):
             return  # some records are not keys (e.g. dict)
         if self._largest is None:
             if self._bytes is None or record.bytes >= int(self._bytes):
-                rec_str = "%d%s%s%s%s%s%d%s%s%s%d%s%d%s%s\n" % (
-                    record.database, self._delimiter, record.type, self._delimiter, record.key, self._delimiter, record.bytes, self._delimiter, record.encoding, self._delimiter, record.size, self._delimiter,
-                    record.len_largest_element, self._delimiter,
-                    record.expiry.timestamp() if record.expiry else '-1')
-                self._out.write(codecs.encode(rec_str, 'latin-1'))
+                key_size_bytes = 'custom_redis_key_size_bytes{db="%d",type="%s",key="%s"} %s\n' % (record.database, record.type, record.key, record.bytes)
+                # rec_str = "%d%s%s%s%s%s%d%s%s%s%d%s%d%s%s\n" % (
+                #     record.database, self._delimiter, record.type, self._delimiter, record.key, self._delimiter, record.bytes, self._delimiter, record.encoding, self._delimiter, record.size, self._delimiter,
+                #     record.len_largest_element, self._delimiter,
+                #     record.expiry.timestamp() if record.expiry else '-1')
+                self._out.write(codecs.encode(key_size_bytes, 'latin-1'))
+
+                key_num_elements = 'custom_redis_key_num_elements{db="%d",type="%s",key="%s"} %s\n' % (record.database, record.type, record.key, record.size)
+                self._out.write(codecs.encode(key_num_elements, 'latin-1'))
+
+                len_largest_element = 'custom_redis_key_len_largest_element{db="%d",type="%s",key="%s"} %s\n' % (record.database, record.type, record.key, record.len_largest_element)
+                self._out.write(codecs.encode(len_largest_element, 'latin-1'))
+
+                len_largest_expiry = 'custom_redis_key_expiry{db="%d",type="%s",key="%s"} %s\n' % (record.database, record.type, record.key, record.expiry.timestamp() if record.expiry else '-1')
+                self._out.write(codecs.encode(len_largest_expiry, 'latin-1'))
         else:
             heappush(self._heap, (record.bytes, record))
 
