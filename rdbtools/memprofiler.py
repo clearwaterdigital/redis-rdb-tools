@@ -89,7 +89,7 @@ class PrintAllKeys(object):
         self._largest = largest
         self._out = out
         self._delimiter = delimiter
-        headers = "# HELP custom_redis_key"
+        headers = "# HELP custom_redis_key\n"
         # headers = "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n" % (
         #     "database", self._delimiter, "type", self._delimiter, "key", self._delimiter, "size_in_bytes", self._delimiter, "encoding", self._delimiter, "num_elements", self._delimiter, "len_largest_element", self._delimiter, "expiry")
         self._out.write(codecs.encode(headers, 'latin-1'))
