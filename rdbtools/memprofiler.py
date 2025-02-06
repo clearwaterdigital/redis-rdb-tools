@@ -88,7 +88,7 @@ class PrintAllKeys(object):
         self._bytes = bytes
         self._largest = largest
         self._out = out
-        headers = "%s,%s,%s,%s,%s,%s,%s,%s\n" % (
+        headers = "%s;%s;%s;%s;%s;%s;%s;%s\n" % (
             "database", "type", "key", "size_in_bytes", "encoding", "num_elements", "len_largest_element", "expiry")
         self._out.write(codecs.encode(headers, 'latin-1'))
 
@@ -100,7 +100,7 @@ class PrintAllKeys(object):
             return  # some records are not keys (e.g. dict)
         if self._largest is None:
             if self._bytes is None or record.bytes >= int(self._bytes):
-                rec_str = "%d,%s,%s,%d,%s,%d,%d,%s\n" % (
+                rec_str = "%d;%s;%s;%d;%s;%d;%d;%s\n" % (
                     record.database, record.type, record.key, record.bytes, record.encoding, record.size,
                     record.len_largest_element,
                     record.expiry.isoformat() if record.expiry else '')
