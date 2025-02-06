@@ -84,12 +84,13 @@ class StatsAggregator(object):
         return json.dumps({"aggregates": self.aggregates, "scatters": self.scatters, "histograms": self.histograms, "metadata": self.metadata})
         
 class PrintAllKeys(object):
-    def __init__(self, out, bytes, largest):
+    def __init__(self, out, bytes, largest, delimiter):
         self._bytes = bytes
         self._largest = largest
         self._out = out
-        headers = "%s;%s;%s;%s;%s;%s;%s;%s\n" % (
-            "database", "type", "key", "size_in_bytes", "encoding", "num_elements", "len_largest_element", "expiry")
+        self._delimiter = delimiter
+        headers = "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n" % (
+            "database", self._delimiter, "type", self._delimiter, "key", self._delimiter, "size_in_bytes", self._delimiter, "encoding", self._delimiter, "num_elements", self._delimiter, "len_largest_element", self._delimiter, "expiry")
         self._out.write(codecs.encode(headers, 'latin-1'))
 
         if self._largest is not None:
@@ -100,9 +101,9 @@ class PrintAllKeys(object):
             return  # some records are not keys (e.g. dict)
         if self._largest is None:
             if self._bytes is None or record.bytes >= int(self._bytes):
-                rec_str = "%d;%s;%s;%d;%s;%d;%d;%s\n" % (
-                    record.database, record.type, record.key, record.bytes, record.encoding, record.size,
-                    record.len_largest_element,
+                rec_str = "%d%s%s%s%s%s%d%s%s%s%d%s%d%s%s\n" % (
+                    record.database, self._delimiter, record.type, self._delimiter, record.key, self._delimiter, record.bytes, self._delimiter, record.encoding, self._delimiter, record.size, self._delimiter,
+                    record.len_largest_element, self._delimiter,
                     record.expiry.isoformat() if record.expiry else '')
                 self._out.write(codecs.encode(rec_str, 'latin-1'))
         else:
