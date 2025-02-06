@@ -44,6 +44,8 @@ Example : %(prog)s --command json -k "user.*" /var/redis/6379/dump.rdb"""
     expire_group.add_argument("-a", "--amend-expire", dest="amend_expire", default=0, type=int, metavar='N',
                   help="With protocol command, add N seconds to key expiry time")
     parser.add_argument("dump_file", nargs=1, help="RDB Dump file to process")
+    parser.add_argument("-d", "--delimiter", dest="delimiter", default=",",
+                  help="Set delimiter for csv")
 
     options = parser.parse_args()
     
@@ -84,7 +86,7 @@ Example : %(prog)s --command json -k "user.*" /var/redis/6379/dump.rdb"""
                 'json': lambda f: JSONCallback(f, string_escape=options.escape),
                 'justkeys': lambda f: KeysOnlyCallback(f, string_escape=options.escape),
                 'justkeyvals': lambda f: KeyValsOnlyCallback(f, string_escape=options.escape),
-                'memory': lambda f: MemoryCallback(PrintAllKeys(f, options.bytes, options.largest),
+                'memory': lambda f: MemoryCallback(PrintAllKeys(f, options.bytes, options.largest, options.delimiter),
                                                    64, string_escape=options.escape),
                 'protocol': lambda f: ProtocolCallback(f, string_escape=options.escape,
                                                        emit_expire=not options.no_expire,
