@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 from rdbtools import __version__
+from setuptools import setup
 
 long_description = '''
 Parse Redis dump.rdb files, Analyze Memory, and Export Data to JSON
@@ -51,10 +52,6 @@ sdict = {
         'Programming Language :: Python'],
 }
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
 
 setup(**sdict)
 

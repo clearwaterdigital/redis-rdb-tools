@@ -3,7 +3,8 @@ import codecs
 from collections import namedtuple
 import random
 import bisect
-from distutils.version import StrictVersion
+from pkg_resources import parse_version
+
 try:
     import ujson as json
 except:
@@ -155,7 +156,7 @@ class MemoryCallback(RdbCallback):
         self._aux_used_mem = None
         self._aux_redis_ver = None
         self._aux_redis_bits = None
-        self._redis_version = StrictVersion(redis_version)
+        self._redis_version = parse_version(redis_version)
         self._total_internal_frag = 0
         if architecture == 64 or architecture == '64':
             self._pointer_size = 8
